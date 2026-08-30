@@ -111,7 +111,7 @@ export default function CallsPage() {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(`${ENGINE}/api/calls`, { cache: "no-store" });
+        const res = await fetch(`/api/calls`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = (await res.json()) as { conversations?: Conversation[] };
         if (!alive) return;
@@ -161,7 +161,7 @@ export default function CallsPage() {
     setTranscripts((p) => ({ ...p, [callId]: { loading: true, lines: [] } }));
     try {
       const res = await fetch(
-        `${ENGINE}/api/calls/${encodeURIComponent(callId)}/transcript`,
+        `/api/calls/${encodeURIComponent(callId)}/transcript`,
         { cache: "no-store" },
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

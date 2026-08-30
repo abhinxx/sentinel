@@ -159,7 +159,7 @@ export default function PoliciesPage() {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(`${ENGINE}/api/packs`, { cache: "no-store" });
+        const res = await fetch(`/packs/index.json`, { cache: "no-store" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json: unknown = await res.json();
         let list: PackSummary[] = [];
@@ -207,7 +207,7 @@ export default function PoliciesPage() {
     }
     setDetailLoading(true);
     try {
-      const res = await fetch(`${ENGINE}/api/packs/${encodeURIComponent(key)}`, {
+      const res = await fetch(`/packs/${encodeURIComponent(key)}.json`, {
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

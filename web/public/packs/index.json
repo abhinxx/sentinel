@@ -1,0 +1,22 @@
+[
+  {
+    "pack_id": "home-water-damage-v1",
+    "product": "Home Water Damage",
+    "insurer": "Cardinal Property",
+    "policy_id": "CP-HOME-77213",
+    "holder": "Marcus Reed",
+    "currency": "USD",
+    "coverages_count": 5,
+    "rules_count": 6
+  },
+  {
+    "pack_id": "travel-flight-delay-v1",
+    "product": "Flight Delay & Trip Disruption",
+    "insurer": "Meridian Travel Cover",
+    "policy_id": "MTC-2026-44817",
+    "holder": "Dana Whitfield",
+    "currency": "USD",
+    "coverages_count": 6,
+    "rules_count": 5
+  }
+]

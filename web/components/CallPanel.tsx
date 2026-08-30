@@ -40,12 +40,14 @@ export function CallPanel() {
   }, []);
 
   const valid = /^\+[1-9][0-9]{7,14}$/.test(to.trim());
+  const usOnly = valid && !to.trim().startsWith("+1");
 
   async function placeCall() {
     if (!valid) return;
     setStatus({ kind: "calling" });
     try {
-      const r = await fetch(`${ENGINE}/api/call`, {
+      // Same-origin route: works on the deployed site with no laptop.
+      const r = await fetch(`/api/call`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ to_number: to.trim() }),
@@ -59,7 +61,7 @@ export function CallPanel() {
     } catch {
       setStatus({
         kind: "err",
-        msg: "Engine offline. Run: uv run python run_live.py --serve-only",
+        msg: "Could not reach the call service.",
       });
     }
   }
@@ -123,7 +125,7 @@ export function CallPanel() {
           />
           <button
             onClick={placeCall}
-            disabled={!valid || status.kind === "calling"}
+            disabled={!valid || usOnly || status.kind === "calling"}
             className="shrink-0 rounded-lg bg-[#4f46e5] px-4 py-2.5 text-[12.5px] font-medium text-white transition-colors hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:bg-[#d0d5dd]"
           >
             {status.kind === "calling" ? "Ringing…" : "Call me"}
@@ -140,7 +142,13 @@ export function CallPanel() {
             {status.msg}
           </div>
         )}
-        {!status.msg && to && !valid && (
+        {usOnly && (
+          <div className="mt-2 rounded-md bg-[#fffaeb] px-2.5 py-1.5 text-[12px] text-[#b54708]">
+            This account can only dial +1 (US/Canada). A +33 number is rejected
+            by the carrier — dial the agent number on the left instead.
+          </div>
+        )}
+        {!status.msg && !usOnly && to && !valid && (
           <div className="mt-2 text-[12px] text-[#b54708]">
             Use E.164 format, e.g. +14155550123
           </div>
