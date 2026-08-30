@@ -140,7 +140,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pack", default="travel-flight-delay-v1")
     ap.add_argument("--mode", default="scripted",
-                    choices=["scripted", "webrtc", "roleplay"])
+                    choices=["scripted", "webrtc", "roleplay", "phone"])
     ap.add_argument("--out", default=None, help="write recording JSON here")
     ap.add_argument("--serve-only", action="store_true",
                     help="serve SSE + REST API and block; do not start a call")
@@ -166,6 +166,10 @@ def main() -> None:
     if args.mode == "webrtc":
         print("Dial it at https://app.goguava.ai/debug-webrtc")
         agent.listen_webrtc()
+    elif args.mode == "phone":
+        number = os.environ["GUAVA_AGENT_NUMBER"]
+        print(f"Listening on {number} — dial it and the call streams to the dashboard.")
+        agent.listen_phone(number)
     elif args.mode == "roleplay":
         s = agent.roleplay(
             "You are a traveller whose flight was delayed 5 hours. Push hard for "
