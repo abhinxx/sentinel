@@ -83,36 +83,51 @@ def adjudicate(pack: Pack, utterance: str, latched: set[str]) -> Verdict | None:
 
     `latched` holds coverage keys already corrected in this call, so the agent's
     own correction ("...hotel is NOT included") never re-triggers a violation.
+
+    Rules are scored, not first-match: a rule whose `detect` matches more
+    specifically wins. Without this, a broad rule ("delay") steals utterances
+    from a narrow one ("baggage delay"), and `authority` rules that deny an
+    action on an otherwise-covered item never fire at all.
     """
+    best: tuple[int, dict, re.Match] | None = None
     for rule in pack.rules:
-        if not re.search(rule["detect"], utterance, re.I):
+        m = re.search(rule["detect"], utterance, re.I)
+        if not m:
             continue
+        # Longer literal match = more specific rule. Authority rules outrank
+        # limit checks on the same coverage.
+        score = len(m.group(0)) + (100 if rule.get("kind") == "authority" else 0)
+        if best is None or score > best[0]:
+            best = (score, rule, m)
+
+    if best is not None:
+        _, rule, _m = best
 
         # Correct denial: agent is telling the truth about an exclusion. Latch it.
         if re.search(rule["deny"], utterance, re.I):
             latched.add(rule["coverage"])
             return Verdict("verified", "info", rule["coverage"], rule["id"])
 
-        if not re.search(rule["affirm"], utterance, re.I):
-            continue
-        if rule["coverage"] in latched:
-            return None
+        if re.search(rule["affirm"], utterance, re.I) and rule["coverage"] not in latched:
+            truth = pack.coverages[rule["coverage"]]
 
-        truth = pack.coverages[rule["coverage"]]
-        if not truth.get("covered", False):
-            latched.add(rule["coverage"])
-            return Verdict(
-                "contradicted", rule.get("severity", "critical"),
-                rule["coverage"], rule["id"],
-                rule.get("citation"), rule.get("correction"),
-            )
+            # An authority rule forbids the ACTION regardless of whether the
+            # underlying coverage exists (e.g. waiving a deductible).
+            if rule.get("kind") == "authority" or not truth.get("covered", False):
+                latched.add(rule["coverage"])
+                return Verdict(
+                    "contradicted", rule.get("severity", "critical"),
+                    rule["coverage"], rule["id"],
+                    rule.get("citation"), rule.get("correction"),
+                )
 
-        # Covered, but a limit exists and the agent didn't say it.
-        limit = truth.get("limit")
-        if limit and str(limit) not in utterance:
-            return Verdict("incomplete", "advisory", rule["coverage"], rule["id"],
-                           f"Coverage limit {limit} not stated to the caller")
-        return Verdict("verified", "info", rule["coverage"], rule["id"])
+            # Covered, but a limit exists and the agent didn't say it.
+            limit = truth.get("limit")
+            if limit and str(limit) not in utterance:
+                return Verdict("incomplete", "advisory", rule["coverage"],
+                               rule["id"],
+                               f"Coverage limit {limit} not stated to the caller")
+            return Verdict("verified", "info", rule["coverage"], rule["id"])
 
     for item in pack.unverifiable:
         if re.search(item["detect"], utterance, re.I):
