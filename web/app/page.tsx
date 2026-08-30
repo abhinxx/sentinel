@@ -24,6 +24,8 @@ export default function Page() {
   const verified = state.claims.filter((c) => c.verdict === "verified").length;
 
   return (
+    // h-full + overflow-hidden: this page is a fixed-viewport dashboard with
+    // its own internally-scrolling panels, unlike the scrollable sub-pages.
     <div className="flex h-full flex-col overflow-hidden">
       {wash && (
         <div className="pointer-events-none fixed inset-0 z-50 animate-[fade_0.8s_ease-out] bg-[#f04438]/[0.07] ring-2 ring-inset ring-[#f04438]/40" />

@@ -291,7 +291,9 @@ export function PageShell({ children }: { children?: React.ReactNode }) {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        // Not 100vh: this sits *below* the app header inside a scroll
+        // container, so 100vh would overflow and create a second scrollbar.
+        minHeight: "100%",
         background: T.pageBg,
         color: T.text,
         padding: "32px 28px 64px",

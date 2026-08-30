@@ -53,7 +53,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
+      {/* Sub-pages scroll; the live dashboard opts out with its own
+          overflow-hidden wrapper. Clipping here broke scrolling everywhere. */}
+      <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
     </div>
   );
 }
