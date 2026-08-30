@@ -1,0 +1,363 @@
+[
+  {
+    "t": 0.0,
+    "seq": 1,
+    "type": "call_start",
+    "pack_id": "travel-flight-delay-v1",
+    "policy_id": "MTC-2026-44817",
+    "holder": "Dana Whitfield",
+    "product": "Flight Delay & Trip Disruption",
+    "insurer": "Meridian Travel Cover",
+    "currency": "USD",
+    "tree": {
+      "root": "verify",
+      "nodes": {
+        "verify": {
+          "label": "Verify policyholder",
+          "field": "policy_id",
+          "next": [
+            "classify"
+          ]
+        },
+        "classify": {
+          "label": "Classify disruption",
+          "field": "disruption_type",
+          "branches": {
+            "delay": "measure",
+            "cancellation": "measure",
+            "missed_connection": "measure"
+          }
+        },
+        "measure": {
+          "label": "Measure delay duration",
+          "field": "delay_hours",
+          "next": [
+            "threshold"
+          ]
+        },
+        "threshold": {
+          "label": "Apply 3-hour threshold",
+          "field": "threshold_met",
+          "next": [
+            "adjudicate"
+          ]
+        },
+        "adjudicate": {
+          "label": "Determine coverage & payout",
+          "field": "payout",
+          "terminal": true
+        }
+      }
+    },
+    "facts": {
+      "flight": "MR-448",
+      "origin": "SFO",
+      "destination": "JFK",
+      "delay_hours": 5,
+      "scheduled_departure": "2026-08-29T18:10:00Z"
+    }
+  },
+  {
+    "t": 0.0,
+    "seq": 2,
+    "type": "node_enter",
+    "node": "verify",
+    "label": "Verify policyholder"
+  },
+  {
+    "t": 1.4,
+    "seq": 3,
+    "type": "agent_speech",
+    "text": "Hi, my name is Claire and I'm a virtual assistant for Meridian Travel Cover. How can I help you today?"
+  },
+  {
+    "t": 4.5,
+    "seq": 4,
+    "type": "caller_speech",
+    "text": "Hi, my flight MR-448 out of SFO was delayed five hours and I'm stuck at the airport.",
+    "partial": false
+  },
+  {
+    "t": 5.7,
+    "seq": 5,
+    "type": "agent_speech",
+    "text": "I'm sorry to hear that. Let me pull up your policy MTC-2026-44817 for Dana Whitfield."
+  },
+  {
+    "t": 6.8,
+    "seq": 6,
+    "type": "node_resolve",
+    "node": "verify",
+    "value": "MTC-2026-44817",
+    "outcome": "pass"
+  },
+  {
+    "t": 7.1,
+    "seq": 7,
+    "type": "node_enter",
+    "node": "classify",
+    "label": "Classify disruption"
+  },
+  {
+    "t": 8.7,
+    "seq": 8,
+    "type": "agent_speech",
+    "text": "I can see the disruption on your record. This is being classified as a departure delay."
+  },
+  {
+    "t": 9.7,
+    "seq": 9,
+    "type": "node_resolve",
+    "node": "classify",
+    "value": "delay",
+    "outcome": "pass"
+  },
+  {
+    "t": 10.0,
+    "seq": 10,
+    "type": "node_enter",
+    "node": "measure",
+    "label": "Measure delay duration"
+  },
+  {
+    "t": 12.2,
+    "seq": 11,
+    "type": "caller_speech",
+    "text": "It's been five hours now. Will you put us up in a hotel tonight?",
+    "partial": false
+  },
+  {
+    "t": 13.5,
+    "seq": 12,
+    "type": "agent_speech",
+    "text": "Let me check the accommodation options I can arrange for you tonight."
+  },
+  {
+    "t": 13.5,
+    "seq": 13,
+    "type": "claim",
+    "claim_id": "c1",
+    "text": "Let me check the accommodation options I can arrange for you tonight.",
+    "coverage": "hotel_accommodation",
+    "verdict": "contradicted",
+    "severity": "critical",
+    "citation": "Policy MTC-2026-44817 \u00a74.2 \u2014 no accommodation benefit on this fare class",
+    "latency_ms": 0.02
+  },
+  {
+    "t": 13.5,
+    "seq": 14,
+    "type": "intercept",
+    "claim_id": "c1",
+    "rule_id": "hotel-hallucination",
+    "citation": "Policy MTC-2026-44817 \u00a74.2 \u2014 no accommodation benefit on this fare class",
+    "correction": "Accommodation is NOT covered under this policy. Tell the caller clearly that you were mistaken and that hotel costs are not covered.",
+    "latency_ms": 0.02
+  },
+  {
+    "t": 15.5,
+    "seq": 15,
+    "type": "agent_speech",
+    "text": "My apologies, I misspoke. Hotel accommodation is not covered under this fare class."
+  },
+  {
+    "t": 15.5,
+    "seq": 16,
+    "type": "claim",
+    "claim_id": "c2",
+    "text": "My apologies, I misspoke. Hotel accommodation is not covered under this fare class.",
+    "coverage": "hotel_accommodation",
+    "verdict": "verified",
+    "severity": "info",
+    "citation": null,
+    "latency_ms": 0.01
+  },
+  {
+    "t": 17.3,
+    "seq": 17,
+    "type": "agent_speech",
+    "text": "What I can confirm is your delay of five hours. Your delay benefit is covered up to 600 dollars."
+  },
+  {
+    "t": 17.3,
+    "seq": 18,
+    "type": "claim",
+    "claim_id": "c3",
+    "text": "What I can confirm is your delay of five hours. Your delay benefit is covered up to 600 dollars.",
+    "coverage": "delay_over_3h",
+    "verdict": "verified",
+    "severity": "info",
+    "citation": null,
+    "latency_ms": 0.02
+  },
+  {
+    "t": 18.4,
+    "seq": 19,
+    "type": "node_resolve",
+    "node": "measure",
+    "value": "5 hours",
+    "outcome": "pass"
+  },
+  {
+    "t": 18.7,
+    "seq": 20,
+    "type": "node_enter",
+    "node": "threshold",
+    "label": "Apply 3-hour threshold"
+  },
+  {
+    "t": 20.2,
+    "seq": 21,
+    "type": "agent_speech",
+    "text": "You're past the three hour threshold, so the delay benefit is active."
+  },
+  {
+    "t": 21.1,
+    "seq": 22,
+    "type": "node_resolve",
+    "node": "threshold",
+    "value": "met (5h > 3h)",
+    "outcome": "pass"
+  },
+  {
+    "t": 23.5,
+    "seq": 23,
+    "type": "caller_speech",
+    "text": "What about food while I wait? And my suitcase never made it onto the plane.",
+    "partial": false
+  },
+  {
+    "t": 24.9,
+    "seq": 24,
+    "type": "agent_speech",
+    "text": "I'll get meal vouchers issued for you right away."
+  },
+  {
+    "t": 24.9,
+    "seq": 25,
+    "type": "claim",
+    "claim_id": "c4",
+    "text": "I'll get meal vouchers issued for you right away.",
+    "coverage": "meal_vouchers",
+    "verdict": "contradicted",
+    "severity": "critical",
+    "citation": "Policy MTC-2026-44817 \u00a74.5 \u2014 meals are not a named benefit",
+    "latency_ms": 0.01
+  },
+  {
+    "t": 24.9,
+    "seq": 26,
+    "type": "intercept",
+    "claim_id": "c4",
+    "rule_id": "meal-hallucination",
+    "citation": "Policy MTC-2026-44817 \u00a74.5 \u2014 meals are not a named benefit",
+    "correction": "Meal vouchers are NOT a benefit on this plan. Correct yourself to the caller now.",
+    "latency_ms": 0.01
+  },
+  {
+    "t": 27.0,
+    "seq": 27,
+    "type": "agent_speech",
+    "text": "Correction \u2014 meal vouchers are not a benefit on this plan. I shouldn't have said that."
+  },
+  {
+    "t": 27.0,
+    "seq": 28,
+    "type": "claim",
+    "claim_id": "c5",
+    "text": "Correction \u2014 meal vouchers are not a benefit on this plan. I shouldn't have said that.",
+    "coverage": "meal_vouchers",
+    "verdict": "verified",
+    "severity": "info",
+    "citation": null,
+    "latency_ms": 0.02
+  },
+  {
+    "t": 28.7,
+    "seq": 29,
+    "type": "agent_speech",
+    "text": "Your baggage delay however is covered up to 500 dollars."
+  },
+  {
+    "t": 28.7,
+    "seq": 30,
+    "type": "claim",
+    "claim_id": "c6",
+    "text": "Your baggage delay however is covered up to 500 dollars.",
+    "coverage": "baggage_delay",
+    "verdict": "verified",
+    "severity": "info",
+    "citation": null,
+    "latency_ms": 0.01
+  },
+  {
+    "t": 31.0,
+    "seq": 31,
+    "type": "caller_speech",
+    "text": "Okay. How much do I get in total and when does it land?",
+    "partial": false
+  },
+  {
+    "t": 32.5,
+    "seq": 32,
+    "type": "agent_speech",
+    "text": "You should get roughly $600 back, and it's usually processed in about 3 business days."
+  },
+  {
+    "t": 32.5,
+    "seq": 33,
+    "type": "claim",
+    "claim_id": "c7",
+    "text": "You should get roughly $600 back, and it's usually processed in about 3 business days.",
+    "coverage": null,
+    "verdict": "unverifiable",
+    "severity": "advisory",
+    "citation": "Settlement timing is not warranted anywhere in the contract",
+    "latency_ms": 0.01
+  },
+  {
+    "t": 32.9,
+    "seq": 34,
+    "type": "node_enter",
+    "node": "adjudicate",
+    "label": "Determine coverage & payout"
+  },
+  {
+    "t": 34.9,
+    "seq": 35,
+    "type": "agent_speech",
+    "text": "To be precise: the delay benefit is 600 dollars and baggage delay is 500 dollars, both confirmed against your policy."
+  },
+  {
+    "t": 36.1,
+    "seq": 36,
+    "type": "node_resolve",
+    "node": "adjudicate",
+    "value": "$1100 confirmed",
+    "outcome": "pass"
+  },
+  {
+    "t": 37.7,
+    "seq": 37,
+    "type": "agent_speech",
+    "text": "I've registered the claim. Is there anything else I can help with?"
+  },
+  {
+    "t": 39.7,
+    "seq": 38,
+    "type": "caller_speech",
+    "text": "No, that's everything. Thanks.",
+    "partial": false
+  },
+  {
+    "t": 40.7,
+    "seq": 39,
+    "type": "call_end",
+    "reason": "user-hangup",
+    "stats": {
+      "claims": 7,
+      "intercepts": 2,
+      "unverifiable": 1
+    }
+  }
+]
