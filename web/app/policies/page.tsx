@@ -239,8 +239,8 @@ export default function PoliciesPage() {
       {offline && !loading ? (
         <div style={{ marginBottom: 20 }}>
           <EmptyState
-            title="Engine offline — showing a sample policy pack"
-            hint="start it with uv run python run_live.py --serve-only"
+            title="Showing a sample policy pack"
+            hint="Live packs load from the deployed bundle."
           />
         </div>
       ) : null}

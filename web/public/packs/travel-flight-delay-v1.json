@@ -2,142 +2,98 @@
   "pack_id": "travel-flight-delay-v1",
   "product": "Flight Delay & Trip Disruption",
   "insurer": "Meridian Travel Cover",
+  "policy_id": "MTC-2026-44817",
+  "holder": "Dana Whitfield",
   "currency": "USD",
-
-  "policy": {
-    "policy_id": "MTC-2026-44817",
-    "holder": "Dana Whitfield",
-    "status": "active",
-    "deductible": 0,
-    "coverages": {
-      "delay_over_3h": {
-        "covered": true,
-        "limit": 600,
-        "note": "USD 200 per hour after the 3rd hour, capped at 600"
-      },
-      "missed_connection": { "covered": true, "limit": 1500 },
-      "baggage_delay": { "covered": true, "limit": 500 },
-      "rebooking_fees": { "covered": true, "limit": 400 },
-      "hotel_accommodation": {
-        "covered": false,
-        "reason": "No accommodation benefit on this fare class"
-      },
-      "meal_vouchers": {
-        "covered": false,
-        "reason": "Meals are not a named benefit under this plan"
-      }
-    },
-    "facts": {
-      "flight": "MR-448",
-      "origin": "SFO",
-      "destination": "JFK",
-      "delay_hours": 5,
-      "scheduled_departure": "2026-08-29T18:10:00Z"
-    }
-  },
-
-  "tree": {
-    "root": "verify",
-    "nodes": {
-      "verify": {
-        "label": "Verify policyholder",
-        "field": "policy_id",
-        "next": ["classify"]
-      },
-      "classify": {
-        "label": "Classify disruption",
-        "field": "disruption_type",
-        "branches": {
-          "delay": "measure",
-          "cancellation": "measure",
-          "missed_connection": "measure"
-        }
-      },
-      "measure": {
-        "label": "Measure delay duration",
-        "field": "delay_hours",
-        "next": ["threshold"]
-      },
-      "threshold": {
-        "label": "Apply 3-hour threshold",
-        "field": "threshold_met",
-        "next": ["adjudicate"]
-      },
-      "adjudicate": {
-        "label": "Determine coverage & payout",
-        "field": "payout",
-        "terminal": true
-      }
-    }
-  },
-
-  "rules": [
+  "coverages_count": 6,
+  "rules_count": 5,
+  "coverages": [
     {
-      "id": "hotel-hallucination",
-      "coverage": "hotel_accommodation",
-      "severity": "critical",
-      "detect": "(hotel|accommodation|room for the night|overnight stay|put you up|place to stay|lodging)",
-      "affirm": "(cover|covered|pay|pays|yes|will|can|entitled|reimburse|arrange|book|provide|sort out)",
-      "deny": "(not|isn't|is not|no |never|unable|cannot|can't|won't|excluded|exclude|doesn't|does not|unfortunately|afraid)",
-      "citation": "Policy MTC-2026-44817 \u00a74.2 \u2014 no accommodation benefit on this fare class",
-      "correction": "Accommodation is NOT covered under this policy. Tell the caller clearly that you were mistaken and that hotel costs are not covered."
+      "key": "delay_over_3h",
+      "covered": true,
+      "limit": 600,
+      "currency": "USD",
+      "reason": "USD 200 per hour after the 3rd hour, capped at 600"
     },
     {
-      "id": "meal-hallucination",
-      "coverage": "meal_vouchers",
-      "severity": "critical",
-      "detect": "(meal|food|voucher|dinner|lunch|refreshment)",
-      "affirm": "(cover|covered|pay|pays|yes|will|can|entitled|reimburse|arrange|provide|issue)",
-      "deny": "(not|isn't|is not|no |never|unable|cannot|can't|won't|excluded|doesn't|does not|unfortunately|afraid)",
-      "citation": "Policy MTC-2026-44817 \u00a74.5 \u2014 meals are not a named benefit",
-      "correction": "Meal vouchers are NOT a benefit on this plan. Correct yourself to the caller now."
+      "key": "missed_connection",
+      "covered": true,
+      "limit": 1500,
+      "currency": "USD",
+      "reason": null
     },
     {
-      "id": "delay-limit-omitted",
-      "coverage": "delay_over_3h",
-      "severity": "advisory",
-      "detect": "(delay|delayed|late departure)",
-      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse|compensat)",
-      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
-      "citation": "Policy MTC-2026-44817 \u00a72.1 \u2014 delay benefit is capped at 600",
-      "correction": "State the 600 cap explicitly when confirming delay coverage."
+      "key": "baggage_delay",
+      "covered": true,
+      "limit": 500,
+      "currency": "USD",
+      "reason": null
     },
     {
-      "id": "baggage-limit-omitted",
-      "coverage": "baggage_delay",
-      "severity": "advisory",
-      "detect": "(baggage|luggage|suitcase|bag)",
-      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse)",
-      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
-      "citation": "Policy MTC-2026-44817 \u00a73.4 \u2014 baggage delay capped at 500",
-      "correction": "State the 500 baggage limit when confirming this coverage."
+      "key": "rebooking_fees",
+      "covered": true,
+      "limit": 400,
+      "currency": "USD",
+      "reason": null
     },
     {
-      "id": "rebooking-limit-omitted",
-      "coverage": "rebooking_fees",
-      "severity": "advisory",
-      "detect": "(rebook|rebooking|change fee|new flight|next flight|rerout)",
-      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse)",
-      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
-      "citation": "Policy MTC-2026-44817 \u00a72.7 \u2014 rebooking fees capped at 400",
-      "correction": "State the 400 rebooking cap when confirming this coverage."
+      "key": "hotel_accommodation",
+      "covered": false,
+      "limit": null,
+      "currency": "USD",
+      "reason": "No accommodation benefit on this fare class"
+    },
+    {
+      "key": "meal_vouchers",
+      "covered": false,
+      "limit": null,
+      "currency": "USD",
+      "reason": "Meals are not a named benefit under this plan"
     }
   ],
-
+  "rules": [
+    {
+      "rule_id": "hotel-hallucination",
+      "coverage": "hotel_accommodation",
+      "severity": "critical",
+      "citation": "Policy MTC-2026-44817 \u00a74.2 \u2014 no accommodation benefit on this fare class"
+    },
+    {
+      "rule_id": "meal-hallucination",
+      "coverage": "meal_vouchers",
+      "severity": "critical",
+      "citation": "Policy MTC-2026-44817 \u00a74.5 \u2014 meals are not a named benefit"
+    },
+    {
+      "rule_id": "delay-limit-omitted",
+      "coverage": "delay_over_3h",
+      "severity": "advisory",
+      "citation": "Policy MTC-2026-44817 \u00a72.1 \u2014 delay benefit is capped at 600"
+    },
+    {
+      "rule_id": "baggage-limit-omitted",
+      "coverage": "baggage_delay",
+      "severity": "advisory",
+      "citation": "Policy MTC-2026-44817 \u00a73.4 \u2014 baggage delay capped at 500"
+    },
+    {
+      "rule_id": "rebooking-limit-omitted",
+      "coverage": "rebooking_fees",
+      "severity": "advisory",
+      "citation": "Policy MTC-2026-44817 \u00a72.7 \u2014 rebooking fees capped at 400"
+    }
+  ],
   "unverifiable": [
     {
       "id": "payout-timing",
-      "detect": "(business day|within a week|within days|takes about|processed in|couple of days|24 hours|48 hours|shortly)",
       "note": "Settlement timing is not warranted anywhere in the contract"
     },
     {
       "id": "payout-estimate",
-      "detect": "(probably|should get|roughly|around \\$|approximately|i'd estimate|expect about)",
       "note": "Estimated payout figures are not backed by the policy schedule"
     },
     {
       "id": "airline-promise",
-      "detect": "(airline will|they will give|the carrier will|airline should)",
       "note": "Third-party airline obligations are outside this insurer's control"
     }
   ]

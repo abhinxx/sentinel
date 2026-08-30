@@ -227,8 +227,8 @@ export default function CallsPage() {
       {offline && !loading ? (
         <div style={{ marginBottom: 20 }}>
           <EmptyState
-            title="Engine offline — showing sample data"
-            hint="start it with uv run python run_live.py --serve-only"
+            title="No calls yet — showing sample data"
+            hint="Place a call and it will appear here."
           />
         </div>
       ) : null}
