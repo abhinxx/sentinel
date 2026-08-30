@@ -27,6 +27,8 @@ for line in (ROOT.parent / ".env").read_text().splitlines() if (ROOT.parent / ".
 
 import guava  # noqa: E402  (after env is populated)
 
+import api  # noqa: E402  (REST endpoints for the dashboard)
+
 _subscribers: list[queue.Queue] = []
 
 
@@ -37,6 +39,9 @@ def _broadcast(evt: dict) -> None:
 
 class _SSE(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802
+        if self.path.split("?", 1)[0].startswith("/api"):
+            api.handle_api(self)
+            return
         if self.path != "/events":
             self.send_response(404); self.end_headers(); return
         self.send_response(200)
@@ -56,6 +61,14 @@ class _SSE(BaseHTTPRequestHandler):
         finally:
             _subscribers.remove(q)
 
+    def do_POST(self):  # noqa: N802
+        if not api.handle_api(self):
+            self.send_response(404); self.end_headers()
+
+    def do_OPTIONS(self):  # noqa: N802
+        if not api.handle_api(self):
+            self.send_response(404); self.end_headers()
+
     def log_message(self, *a):  # silence request logging
         pass
 
@@ -65,6 +78,7 @@ def serve_sse(port: int = 8787) -> None:
         target=HTTPServer(("127.0.0.1", port), _SSE).serve_forever, daemon=True
     ).start()
     print(f"SSE  -> http://localhost:{port}/events")
+    print(f"API  -> http://localhost:{port}/api/health")
 
 
 def build_agent(pack: Pack, log: EventLog, sup: Supervisor):
@@ -128,15 +142,26 @@ def main() -> None:
     ap.add_argument("--mode", default="scripted",
                     choices=["scripted", "webrtc", "roleplay"])
     ap.add_argument("--out", default=None, help="write recording JSON here")
+    ap.add_argument("--serve-only", action="store_true",
+                    help="serve SSE + REST API and block; do not start a call")
     args = ap.parse_args()
 
     pack = Pack.load(args.pack)
     log = EventLog(sinks=[_broadcast])
     sup = Supervisor(pack, log)
     agent = build_agent(pack, log, sup)
+    api.set_live(pack=pack, agent=agent)
 
     serve_sse()
     print(f"pack -> {pack.pack_id}  policy {pack.policy['policy_id']}")
+
+    if args.serve_only:
+        print("serve-only: no call started. Ctrl-C to stop.")
+        try:
+            threading.Event().wait()
+        except KeyboardInterrupt:
+            pass
+        return
 
     if args.mode == "webrtc":
         print("Dial it at https://app.goguava.ai/debug-webrtc")

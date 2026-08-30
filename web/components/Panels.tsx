@@ -4,17 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import type { CallState, Verdict } from "@/lib/stream";
 
 const PILL: Record<Verdict, string> = {
-  verified: "bg-emerald-400/15 text-emerald-300 ring-emerald-400/30",
-  contradicted: "bg-red-500/20 text-red-300 ring-red-500/40",
-  unverifiable: "bg-amber-400/15 text-amber-300 ring-amber-400/30",
-  incomplete: "bg-sky-400/15 text-sky-300 ring-sky-400/30",
+  verified: "bg-[#ecfdf3] text-[#067647] ring-[#abefc6]",
+  contradicted: "bg-[#fef3f2] text-[#b42318] ring-[#fecdca]",
+  unverifiable: "bg-[#fffaeb] text-[#b54708] ring-[#fedf89]",
+  incomplete: "bg-[#eff8ff] text-[#175cd3] ring-[#b2ddff]",
 };
 
 const LABEL: Record<Verdict, string> = {
-  verified: "VERIFIED",
-  contradicted: "CONTRADICTED",
-  unverifiable: "UNVERIFIABLE",
-  incomplete: "INCOMPLETE",
+  verified: "Verified",
+  contradicted: "Contradicted",
+  unverifiable: "Unverifiable",
+  incomplete: "Incomplete",
 };
 
 export function Transcript({ state }: { state: CallState }) {
@@ -24,35 +24,39 @@ export function Transcript({ state }: { state: CallState }) {
   }, [state.transcript.length]);
 
   return (
-    <div ref={ref} className="h-full overflow-y-auto px-4 py-3 space-y-2">
+    <div ref={ref} className="h-full space-y-2 overflow-y-auto px-4 py-3">
       {state.transcript.map((l) => (
         <div
           key={l.seq}
           className={`flex ${l.who === "caller" ? "justify-end" : "justify-start"}`}
         >
           <div
-            className={`max-w-[85%] rounded-lg px-3 py-2 text-[13px] leading-snug ${
+            className={`max-w-[86%] rounded-[10px] px-3 py-2 text-[13px] leading-snug ${
               l.who === "caller"
-                ? "bg-white/[0.06] text-white/80"
+                ? "bg-[#f2f4f7] text-[#101828]"
                 : l.intercepted
-                  ? "border-l-2 border-red-500 bg-red-500/10 text-red-200/90 line-through decoration-red-400/60"
-                  : "bg-sky-400/[0.07] text-sky-50/90"
+                  ? "border-l-[3px] border-[#f04438] bg-[#fef3f2] text-[#912018]"
+                  : "bg-[#eef2ff] text-[#101828]"
             }`}
           >
-            <div className="mb-0.5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider opacity-40">
+            <div className="mb-0.5 flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-[#98a2b3]">
               <span>{l.who}</span>
-              <span>{l.t.toFixed(2)}s</span>
+              <span className="tabular-nums">{l.t.toFixed(2)}s</span>
               {l.intercepted && (
-                <span className="text-red-400 no-underline">intercepted</span>
+                <span className="rounded bg-[#fee4e2] px-1 py-px text-[9px] font-semibold text-[#b42318]">
+                  intercepted
+                </span>
               )}
             </div>
-            {l.text}
+            <span className={l.intercepted ? "line-through decoration-[#f97066]" : ""}>
+              {l.text}
+            </span>
           </div>
         </div>
       ))}
       {state.transcript.length === 0 && (
-        <div className="pt-8 text-center text-sm text-white/25">
-          waiting for call…
+        <div className="pt-10 text-center text-[13px] text-[#98a2b3]">
+          Transcript will appear here once a call starts.
         </div>
       )}
     </div>
@@ -68,58 +72,61 @@ export function ClaimsLedger({ state }: { state: CallState }) {
 
   return (
     <div ref={ref} className="h-full overflow-y-auto">
-      <table className="w-full border-collapse text-[12px]">
-        <thead className="sticky top-0 z-10 bg-[#0c0d10]">
-          <tr className="text-left font-mono text-[10px] uppercase tracking-wider text-white/35">
-            <th className="px-3 py-2 font-normal">t</th>
-            <th className="px-2 py-2 font-normal">claim</th>
-            <th className="px-2 py-2 font-normal">coverage</th>
-            <th className="px-3 py-2 text-right font-normal">verdict</th>
+      <table className="w-full border-collapse text-[12.5px]">
+        <thead className="sticky top-0 z-10 bg-[#f9fafb]">
+          <tr className="text-left text-[10.5px] font-semibold uppercase tracking-wider text-[#667085]">
+            <th className="border-b border-[#e4e7ec] px-3 py-2">Time</th>
+            <th className="border-b border-[#e4e7ec] px-2 py-2">Claim</th>
+            <th className="border-b border-[#e4e7ec] px-2 py-2">Coverage</th>
+            <th className="border-b border-[#e4e7ec] px-3 py-2 text-right">
+              Verdict
+            </th>
           </tr>
         </thead>
         <tbody>
           {state.claims.map((c) => {
             const bad = c.verdict === "contradicted";
+            const isOpen = open === c.claimId;
             return (
               <>
                 <tr
                   key={c.claimId}
-                  onClick={() => setOpen(open === c.claimId ? null : c.claimId)}
-                  className={`cursor-pointer border-t border-white/[0.05] transition-colors hover:bg-white/[0.03] ${
-                    bad ? "bg-red-500/[0.07]" : ""
+                  onClick={() => setOpen(isOpen ? null : c.claimId)}
+                  className={`cursor-pointer border-b border-[#f2f4f7] transition-colors hover:bg-[#f9fafb] ${
+                    bad ? "bg-[#fffbfa]" : ""
                   }`}
                 >
-                  <td className="px-3 py-2 font-mono text-white/40">
-                    {c.t.toFixed(2)}
+                  <td className="px-3 py-2 tabular-nums text-[#667085]">
+                    {c.t.toFixed(2)}s
                   </td>
                   <td className="max-w-0 px-2 py-2">
-                    <div className="truncate text-white/75">{c.text}</div>
+                    <div className="truncate text-[#101828]">{c.text}</div>
                   </td>
-                  <td className="px-2 py-2 font-mono text-[11px] text-white/45">
+                  <td className="px-2 py-2 text-[11.5px] text-[#475467]">
                     {c.coverage ?? "—"}
                   </td>
                   <td className="px-3 py-2 text-right">
                     <span
-                      className={`inline-block rounded px-1.5 py-0.5 font-mono text-[9.5px] font-semibold tracking-wide ring-1 ${PILL[c.verdict]}`}
+                      className={`inline-block rounded-full px-2 py-0.5 text-[10.5px] font-semibold ring-1 ring-inset ${PILL[c.verdict]}`}
                     >
                       {LABEL[c.verdict]}
                     </span>
                   </td>
                 </tr>
-                {open === c.claimId && (c.citation || c.latencyMs != null) && (
-                  <tr key={c.claimId + "-d"} className="bg-black/40">
-                    <td colSpan={4} className="px-3 py-2">
+                {isOpen && (c.citation || c.latencyMs != null) && (
+                  <tr key={c.claimId + "-d"} className="bg-[#f9fafb]">
+                    <td colSpan={4} className="px-3 py-2.5">
                       {c.citation && (
-                        <div className="mb-1 text-[11.5px] text-amber-200/80">
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">
-                            citation{" "}
+                        <div className="mb-1 text-[12px] text-[#475467]">
+                          <span className="font-semibold text-[#667085]">
+                            Citation:{" "}
                           </span>
                           {c.citation}
                         </div>
                       )}
                       {c.latencyMs != null && (
-                        <div className="font-mono text-[10.5px] text-white/40">
-                          adjudicated in {c.latencyMs.toFixed(2)}ms
+                        <div className="text-[11.5px] tabular-nums text-[#98a2b3]">
+                          Adjudicated in {c.latencyMs.toFixed(2)}ms
                         </div>
                       )}
                     </td>
@@ -131,8 +138,8 @@ export function ClaimsLedger({ state }: { state: CallState }) {
         </tbody>
       </table>
       {state.claims.length === 0 && (
-        <div className="pt-8 text-center text-sm text-white/25">
-          no claims adjudicated yet
+        <div className="pt-10 text-center text-[13px] text-[#98a2b3]">
+          No claims adjudicated yet.
         </div>
       )}
     </div>

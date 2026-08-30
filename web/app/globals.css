@@ -1,13 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  --bg: #f7f8fa;
+  --card: #ffffff;
+  --border: #e4e7ec;
+  --text: #101828;
+  --text-2: #475467;
+  --muted: #667085;
+  --accent: #4f46e5;
+  --accent-bg: #eef2ff;
 }
 
 html,
 body {
   height: 100%;
-  background: #08090b;
+  background: var(--bg);
+  color: var(--text);
   overscroll-behavior: none;
 }
 
@@ -16,10 +26,18 @@ body {
   100% { opacity: 0; }
 }
 
-::-webkit-scrollbar { width: 7px; height: 7px; }
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0.35); }
+  70%  { box-shadow: 0 0 0 10px rgba(180, 35, 24, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0); }
+}
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgb(255 255 255 / 0.08);
-  border-radius: 4px;
+  background: #d0d5dd;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 0.16); }
+::-webkit-scrollbar-thumb:hover { background: #98a2b3; background-clip: content-box; }

@@ -2,16 +2,16 @@
 
 import { layout, type CallState, type Tree } from "@/lib/stream";
 
-const W = 208;
-const H = 74;
-const GAP_X = 268;
-const GAP_Y = 108;
+const W = 200;
+const H = 72;
+const GAP_X = 262;
+const GAP_Y = 106;
 
 const STATE_STYLE = {
-  idle: { box: "fill-white/[0.02] stroke-white/10", text: "fill-white/35" },
-  active: { box: "fill-sky-400/10 stroke-sky-400", text: "fill-sky-100" },
-  pass: { box: "fill-emerald-400/10 stroke-emerald-400/70", text: "fill-emerald-50" },
-  fail: { box: "fill-red-500/15 stroke-red-500", text: "fill-red-50" },
+  idle: { box: "fill-white stroke-[#e4e7ec]", text: "fill-[#98a2b3]" },
+  active: { box: "fill-[#eef2ff] stroke-[#4f46e5]", text: "fill-[#101828]" },
+  pass: { box: "fill-[#ecfdf3] stroke-[#12b76a]", text: "fill-[#054f31]" },
+  fail: { box: "fill-[#fef3f2] stroke-[#f04438]", text: "fill-[#912018]" },
 } as const;
 
 export function DecisionCanvas({
@@ -24,8 +24,8 @@ export function DecisionCanvas({
   const tree = state.tree as Tree | undefined;
   if (!tree?.nodes) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-white/25">
-        waiting for call…
+      <div className="flex h-full items-center justify-center text-[13px] text-[#98a2b3]">
+        Waiting for a call to start…
       </div>
     );
   }
@@ -62,37 +62,27 @@ export function DecisionCanvas({
           refY="2.5"
           orient="auto"
         >
-          <polygon points="0 0, 7 2.5, 0 5" className="fill-white/25" />
+          <polygon points="0 0, 7 2.5, 0 5" className="fill-[#98a2b3]" />
         </marker>
-        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur stdDeviation="5" result="b" />
-          <feMerge>
-            <feMergeNode in="b" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
       </defs>
 
       {edges.map(({ from, to, label }, i) => {
         if (!pos[from] || !pos[to]) return null;
-        const taken =
-          state.path.includes(from) && state.path.includes(to);
+        const taken = state.path.includes(from) && state.path.includes(to);
         const x1 = px(from) + W;
         const y1 = py(from) + H / 2;
         const x2 = px(to);
         const y2 = py(to) + H / 2;
         const mid = (x1 + x2) / 2;
-        // Only label a branch when siblings actually diverge; parallel edges
-        // into the same node would otherwise stack labels on top of each other.
         const showLabel =
           !!label && edges.filter((e) => e.from === from).length > 1 && y1 !== y2;
         return (
-          <g key={i} opacity={taken ? 1 : 0.16}>
+          <g key={i} opacity={taken ? 1 : 0.32}>
             <path
               d={`M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`}
               fill="none"
-              className={taken ? "stroke-sky-400/70" : "stroke-white/30"}
-              strokeWidth={taken ? 2 : 1.2}
+              className={taken ? "stroke-[#4f46e5]" : "stroke-[#d0d5dd]"}
+              strokeWidth={taken ? 2 : 1.3}
               markerEnd="url(#arrow)"
             />
             {showLabel && (
@@ -100,8 +90,8 @@ export function DecisionCanvas({
                 x={mid}
                 y={(y1 + y2) / 2 - 7}
                 textAnchor="middle"
-                className="fill-white/40 font-mono"
-                fontSize={10}
+                className="fill-[#667085]"
+                fontSize={10.5}
               >
                 {label}
               </text>
@@ -122,12 +112,14 @@ export function DecisionCanvas({
           <g key={id} transform={`translate(${px(id)}, ${py(id)})`}>
             {halo && (
               <rect
-                width={W}
-                height={H}
-                rx={10}
-                className="fill-red-500/20 stroke-red-500"
+                x={-4}
+                y={-4}
+                width={W + 8}
+                height={H + 8}
+                rx={13}
+                className="fill-none stroke-[#f04438]"
                 strokeWidth={3}
-                filter="url(#glow)"
+                opacity={0.8}
               />
             )}
             <rect
@@ -135,43 +127,40 @@ export function DecisionCanvas({
               height={H}
               rx={10}
               className={`${style.box} transition-all duration-300`}
-              strokeWidth={isActive || st === "fail" ? 2 : 1}
-              filter={isActive ? "url(#glow)" : undefined}
-            >
-              {isActive && (
-                <animate
-                  attributeName="opacity"
-                  values="1;0.55;1"
-                  dur="1.6s"
-                  repeatCount="indefinite"
-                />
-              )}
-            </rect>
+              strokeWidth={isActive || st === "fail" ? 2 : 1.2}
+            />
             <text
               x={14}
-              y={value ? 25 : 36}
+              y={value ? 27 : 41}
               className={`${style.text} font-medium`}
-              fontSize={13}
+              fontSize={13.5}
             >
               {node.label}
             </text>
             {value && (
-              <text
-                x={14}
-                y={44}
-                className="fill-emerald-300/90 font-mono"
-                fontSize={11}
-              >
-                {value.length > 24 ? value.slice(0, 24) + "…" : value}
+              <text x={14} y={47} className="fill-[#475467]" fontSize={11.5}>
+                {value.length > 26 ? value.slice(0, 26) + "…" : value}
               </text>
             )}
             {st === "pass" && (
-              <text x={W - 20} y={24} className="fill-emerald-400" fontSize={14}>
+              <text
+                x={W - 22}
+                y={26}
+                className="fill-[#12b76a]"
+                fontSize={15}
+                fontWeight="bold"
+              >
                 ✓
               </text>
             )}
             {st === "fail" && (
-              <text x={W - 20} y={24} className="fill-red-400" fontSize={14}>
+              <text
+                x={W - 22}
+                y={26}
+                className="fill-[#f04438]"
+                fontSize={15}
+                fontWeight="bold"
+              >
                 ✕
               </text>
             )}
