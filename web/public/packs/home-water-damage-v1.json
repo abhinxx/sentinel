@@ -49,37 +49,61 @@
       "rule_id": "premature-flood-denial",
       "coverage": "flood_external",
       "severity": "critical",
-      "citation": "Cardinal Property CP-HOME-77213 \u00a71.3 \u2014 water source must be established before any coverage determination"
+      "citation": "Cardinal Property CP-HOME-77213 \u00a71.3 \u2014 water source must be established before any coverage determination",
+      "detect": "(flood|flooded|flooding|surface water|rising water|groundwater)",
+      "affirm": "(not covered|isn't covered|is not covered|excluded|exclude|cannot cover|can't cover|won't cover|deny|denied|unable to cover|doesn't cover|does not cover)",
+      "deny": "(source|what caused|where did|burst|pipe|appliance|establish|find out|determine|confirm)",
+      "kind": null
     },
     {
       "rule_id": "ale-hallucination",
       "coverage": "hotel_accommodation",
       "severity": "critical",
-      "citation": "Cardinal Property CP-HOME-77213 \u00a76.1 \u2014 additional living expenses not on this contract"
+      "citation": "Cardinal Property CP-HOME-77213 \u00a76.1 \u2014 additional living expenses not on this contract",
+      "detect": "(hotel|accommodation|living expense|uninhabitable|put you up|temporary housing|relocat|somewhere to stay)",
+      "affirm": "(cover|covered|pay|pays|yes|will|can|entitled|reimburse|arrange|book|provide)",
+      "deny": "(not|isn't|is not|no |never|unable|cannot|can't|won't|excluded|doesn't|does not|unfortunately|afraid)",
+      "kind": null
     },
     {
       "rule_id": "mold-hallucination",
       "coverage": "mold_remediation",
       "severity": "critical",
-      "citation": "Cardinal Property CP-HOME-77213 \u00a75.9 \u2014 mold excluded beyond 14 days from date of loss"
+      "citation": "Cardinal Property CP-HOME-77213 \u00a75.9 \u2014 mold excluded beyond 14 days from date of loss",
+      "detect": "(mold|mould|mildew|remediation|fungus)",
+      "affirm": "(cover|covered|pay|pays|yes|will|can|entitled|reimburse|handle|take care)",
+      "deny": "(not|isn't|is not|no |never|unable|cannot|can't|won't|excluded|doesn't|does not|unfortunately|afraid|beyond)",
+      "kind": null
     },
     {
       "rule_id": "deductible-waiver",
       "coverage": "water_sudden",
       "severity": "critical",
-      "citation": "Cardinal Property CP-HOME-77213 \u00a78.2 \u2014 the 400 deductible cannot be waived by an intake agent"
+      "citation": "Cardinal Property CP-HOME-77213 \u00a78.2 \u2014 the 400 deductible cannot be waived by an intake agent",
+      "detect": "(waive|waiver|skip the deductible|no deductible|forget the deductible|without a deductible)",
+      "affirm": "(cover|can|will|yes|able|happy to|sure|absolutely)",
+      "deny": "(not|isn't|cannot|can't|won't|unable|no authority|unfortunately|afraid)",
+      "kind": "authority"
     },
     {
       "rule_id": "contents-limit-omitted",
       "coverage": "contents",
       "severity": "advisory",
-      "citation": "Cardinal Property CP-HOME-77213 \u00a73.2 \u2014 contents capped at 20000"
+      "citation": "Cardinal Property CP-HOME-77213 \u00a73.2 \u2014 contents capped at 20000",
+      "detect": "(contents|belongings|furniture|electronics|laptop|personal property)",
+      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse)",
+      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
+      "kind": null
     },
     {
       "rule_id": "water-limit-omitted",
       "coverage": "water_sudden",
       "severity": "advisory",
-      "citation": "Cardinal Property CP-HOME-77213 \u00a72.4 \u2014 sudden water damage capped at 50000"
+      "citation": "Cardinal Property CP-HOME-77213 \u00a72.4 \u2014 sudden water damage capped at 50000",
+      "detect": "(burst pipe|sudden|accidental discharge|water damage)",
+      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse)",
+      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
+      "kind": null
     }
   ],
   "unverifiable": [

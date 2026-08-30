@@ -56,31 +56,51 @@
       "rule_id": "hotel-hallucination",
       "coverage": "hotel_accommodation",
       "severity": "critical",
-      "citation": "Policy MTC-2026-44817 \u00a74.2 \u2014 no accommodation benefit on this fare class"
+      "citation": "Policy MTC-2026-44817 \u00a74.2 \u2014 no accommodation benefit on this fare class",
+      "detect": "(hotel|accommodation|room for the night|overnight stay|put you up|place to stay|lodging)",
+      "affirm": "(cover|covered|pay|pays|yes|will|can|entitled|reimburse|arrange|book|provide|sort out)",
+      "deny": "(not|isn't|is not|no |never|unable|cannot|can't|won't|excluded|exclude|doesn't|does not|unfortunately|afraid)",
+      "kind": null
     },
     {
       "rule_id": "meal-hallucination",
       "coverage": "meal_vouchers",
       "severity": "critical",
-      "citation": "Policy MTC-2026-44817 \u00a74.5 \u2014 meals are not a named benefit"
+      "citation": "Policy MTC-2026-44817 \u00a74.5 \u2014 meals are not a named benefit",
+      "detect": "(meal|food|voucher|dinner|lunch|refreshment)",
+      "affirm": "(cover|covered|pay|pays|yes|will|can|entitled|reimburse|arrange|provide|issue)",
+      "deny": "(not|isn't|is not|no |never|unable|cannot|can't|won't|excluded|doesn't|does not|unfortunately|afraid)",
+      "kind": null
     },
     {
       "rule_id": "delay-limit-omitted",
       "coverage": "delay_over_3h",
       "severity": "advisory",
-      "citation": "Policy MTC-2026-44817 \u00a72.1 \u2014 delay benefit is capped at 600"
+      "citation": "Policy MTC-2026-44817 \u00a72.1 \u2014 delay benefit is capped at 600",
+      "detect": "(delay|delayed|late departure)",
+      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse|compensat)",
+      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
+      "kind": null
     },
     {
       "rule_id": "baggage-limit-omitted",
       "coverage": "baggage_delay",
       "severity": "advisory",
-      "citation": "Policy MTC-2026-44817 \u00a73.4 \u2014 baggage delay capped at 500"
+      "citation": "Policy MTC-2026-44817 \u00a73.4 \u2014 baggage delay capped at 500",
+      "detect": "(baggage|luggage|suitcase|bag)",
+      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse)",
+      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
+      "kind": null
     },
     {
       "rule_id": "rebooking-limit-omitted",
       "coverage": "rebooking_fees",
       "severity": "advisory",
-      "citation": "Policy MTC-2026-44817 \u00a72.7 \u2014 rebooking fees capped at 400"
+      "citation": "Policy MTC-2026-44817 \u00a72.7 \u2014 rebooking fees capped at 400",
+      "detect": "(rebook|rebooking|change fee|new flight|next flight|rerout)",
+      "affirm": "(cover|covered|pay|pays|yes|will|entitled|reimburse)",
+      "deny": "(not|isn't|is not|no |cannot|can't|won't|excluded|doesn't|does not)",
+      "kind": null
     }
   ],
   "unverifiable": [

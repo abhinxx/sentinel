@@ -36,6 +36,12 @@ def to_web(raw: dict) -> dict:
             "coverage": r.get("coverage"),
             "severity": r.get("severity", "info"),
             "citation": r.get("citation"),
+            # The dashboard re-runs adjudication client-side so judges can test
+            # arbitrary sentences, so the patterns ship with the pack.
+            "detect": r.get("detect"),
+            "affirm": r.get("affirm"),
+            "deny": r.get("deny"),
+            "kind": r.get("kind"),
         }
         for r in raw.get("rules", [])
     ]
