@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AdjudicationTrace } from "@/components/AdjudicationTrace";
+import { TrainingSignal } from "@/components/TrainingSignal";
 import type { CallState, Verdict } from "@/lib/stream";
 
 const PILL: Record<Verdict, string> = {
@@ -113,22 +115,15 @@ export function ClaimsLedger({ state }: { state: CallState }) {
                     </span>
                   </td>
                 </tr>
-                {isOpen && (c.citation || c.latencyMs != null) && (
+                {isOpen && (
                   <tr key={c.claimId + "-d"} className="bg-[#f9fafb]">
-                    <td colSpan={4} className="px-3 py-2.5">
-                      {c.citation && (
-                        <div className="mb-1 text-[12px] text-[#475467]">
-                          <span className="font-semibold text-[#667085]">
-                            Citation:{" "}
-                          </span>
-                          {c.citation}
-                        </div>
-                      )}
-                      {c.latencyMs != null && (
-                        <div className="text-[11.5px] tabular-nums text-[#98a2b3]">
-                          Adjudicated in {c.latencyMs.toFixed(2)}ms
-                        </div>
-                      )}
+                    <td colSpan={4} className="px-3 py-3">
+                      {/* Answers "why did this fire?" — the pipeline, then the
+                          labelled spans harvested from the utterance. */}
+                      <AdjudicationTrace claim={c} />
+                      <div className="mt-3">
+                        <TrainingSignal text={c.text} />
+                      </div>
                     </td>
                   </tr>
                 )}

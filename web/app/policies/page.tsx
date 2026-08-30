@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { RuleTester } from "../../components/RuleTester";
 import {
   Card,
   EmptyState,
@@ -367,6 +368,12 @@ export default function PoliciesPage() {
 
               <section style={{ marginBottom: 26 }}>
                 <h2 style={SECTION_TITLE}>Supervisor rules</h2>
+                <div style={{ marginBottom: 14 }}>
+                  <RuleTester
+                    rules={rules as never[]}
+                    coverages={coverages as never[]}
+                  />
+                </div>
                 <div
                   style={{
                     border: `1px solid ${T.border}`,
