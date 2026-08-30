@@ -6,7 +6,9 @@ export const ENGINE =
   process.env.NEXT_PUBLIC_SENTINEL_API ?? "http://localhost:8787";
 
 /** Fallback so the panel still shows a real number when the engine is offline. */
-const FALLBACK_NUMBER = "+14842707493";
+/** Dedicated Sentinel number. The shared org number is answered by other
+ *  teams' agents, so this project owns its own line. */
+const FALLBACK_NUMBER = "+14843174533";
 
 function pretty(n: string) {
   const d = n.replace(/[^0-9]/g, "");
@@ -26,14 +28,24 @@ export function CallPanel() {
 
   useEffect(() => {
     let dead = false;
-    fetch(`${ENGINE}/api/health`)
-      .then((r) => r.json())
-      .then((j) => {
-        if (dead) return;
-        setOnline(true);
-        if (j.agent_number) setAgentNumber(j.agent_number);
-      })
-      .catch(() => !dead && setOnline(false));
+    // Same-origin first (works on the deployed site), then the local engine.
+    const sources = [`/api/health`, `${ENGINE}/api/health`];
+    (async () => {
+      for (const url of sources) {
+        try {
+          const j = await (await fetch(url)).json();
+          if (dead) return;
+          if (j.agent_number) {
+            setAgentNumber(j.agent_number);
+            setOnline(url.startsWith("http"));
+            return;
+          }
+        } catch {
+          /* try next source */
+        }
+      }
+      if (!dead) setOnline(false);
+    })();
     return () => {
       dead = true;
     };
