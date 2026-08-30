@@ -25,7 +25,7 @@ export function DecisionCanvas({
   if (!tree?.nodes) {
     return (
       <div className="flex h-full items-center justify-center text-[13px] text-[#98a2b3]">
-        Waiting for a call to start…
+        Loading the replay…
       </div>
     );
   }

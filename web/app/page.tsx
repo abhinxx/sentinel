@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CallPanel } from "@/components/CallPanel";
+import { DemoScript } from "@/components/DemoScript";
 import { DecisionCanvas } from "@/components/DecisionCanvas";
 import { ClaimsLedger, Transcript } from "@/components/Panels";
 import { useEventStream, type Source } from "@/lib/useEventStream";
@@ -30,6 +31,7 @@ export default function Page() {
 
       <div className="shrink-0 space-y-3 border-b border-[#e4e7ec] bg-white px-5 py-3">
         <CallPanel />
+        <DemoScript />
 
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-baseline gap-2">

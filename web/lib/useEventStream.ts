@@ -59,7 +59,10 @@ export function useEventStream(source: Source) {
 
       const next = list[i + 1];
       if (!next) return;
-      const gap = Math.min((next.t - list[i].t) * 1000, MAX_GAP_MS);
+      // First event renders immediately: an empty dashboard on load reads as
+      // "broken" rather than "waiting".
+      const raw = i === 0 ? 0 : (next.t - list[i].t) * 1000;
+      const gap = Math.min(raw, MAX_GAP_MS);
       timer.current = setTimeout(tick, Math.max(gap / speedRef.current, 40));
     };
 

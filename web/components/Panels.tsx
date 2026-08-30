@@ -56,7 +56,7 @@ export function Transcript({ state }: { state: CallState }) {
       ))}
       {state.transcript.length === 0 && (
         <div className="pt-10 text-center text-[13px] text-[#98a2b3]">
-          Transcript will appear here once a call starts.
+          Loading the replay… or dial the number above to go live.
         </div>
       )}
     </div>
@@ -139,7 +139,7 @@ export function ClaimsLedger({ state }: { state: CallState }) {
       </table>
       {state.claims.length === 0 && (
         <div className="pt-10 text-center text-[13px] text-[#98a2b3]">
-          No claims adjudicated yet.
+          Claims appear here as the agent speaks.
         </div>
       )}
     </div>
