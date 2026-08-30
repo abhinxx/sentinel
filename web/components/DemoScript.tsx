@@ -43,25 +43,51 @@ const TONE = {
 };
 
 export function DemoScript() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [copied, setCopied] = useState<number | null>(null);
+  const [copiedPolicy, setCopiedPolicy] = useState(false);
 
   return (
     <div className="rounded-[10px] border border-[#e4e7ec] bg-white shadow-[0_1px_2px_rgba(16,24,40,.05)]">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-2 px-4 py-2.5 text-left"
-      >
+      <div className="flex flex-wrap items-center gap-3 px-4 py-2.5">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-[#667085]">
-          What to say on the call
+          Demo script
         </span>
-        <span className="rounded-full bg-[#eef2ff] px-2 py-0.5 text-[10.5px] font-medium text-[#4f46e5]">
-          {SCRIPT.length} prompts
+
+        {/* The agent asks for this first — surface it before anything else. */}
+        <div className="flex items-center gap-2 rounded-lg bg-[#eef2ff] px-2.5 py-1">
+          <span className="text-[10.5px] font-medium uppercase tracking-wider text-[#4f46e5]">
+            Policy no.
+          </span>
+          <code className="text-[13px] font-semibold tabular-nums text-[#101828]">
+            MTC-2026-44817
+          </code>
+          <button
+            onClick={() => {
+              navigator.clipboard?.writeText("MTC-2026-44817");
+              setCopiedPolicy(true);
+              setTimeout(() => setCopiedPolicy(false), 1400);
+            }}
+            className="text-[10.5px] font-medium text-[#4f46e5] hover:underline"
+          >
+            {copiedPolicy ? "Copied" : "Copy"}
+          </button>
+        </div>
+
+        <span className="text-[12px] text-[#475467]">
+          Say it as <strong className="font-semibold">“M-T-C 2026 44817”</strong>,
+          holder <strong className="font-semibold">Dana Whitfield</strong>, flight{" "}
+          <strong className="font-semibold">MR-448</strong> delayed{" "}
+          <strong className="font-semibold">5 hours</strong>.
         </span>
-        <span className="ml-auto text-[11px] text-[#98a2b3]">
-          {open ? "Hide" : "Show"}
-        </span>
-      </button>
+
+        <button
+          onClick={() => setOpen(!open)}
+          className="ml-auto text-[11px] font-medium text-[#4f46e5] hover:underline"
+        >
+          {open ? "Hide prompts" : `Show ${SCRIPT.length} prompts`}
+        </button>
+      </div>
 
       {open && (
         <div className="border-t border-[#f2f4f7] px-4 py-3">

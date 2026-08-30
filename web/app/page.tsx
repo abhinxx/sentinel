@@ -31,7 +31,9 @@ export default function Page() {
         <div className="pointer-events-none fixed inset-0 z-50 animate-[fade_0.8s_ease-out] bg-[#f04438]/[0.07] ring-2 ring-inset ring-[#f04438]/40" />
       )}
 
-      <div className="shrink-0 space-y-3 border-b border-[#e4e7ec] bg-white px-5 py-3">
+      {/* max-h + auto: with the demo script expanded this section can exceed
+          the space available on a laptop screen. */}
+      <div className="max-h-[52vh] shrink-0 space-y-3 overflow-y-auto border-b border-[#e4e7ec] bg-white px-5 py-3">
         <CallPanel />
         <DemoScript />
 
